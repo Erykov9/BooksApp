@@ -10,47 +10,46 @@
   const filters = [];
 
 
-  class BookList {
-    constructor () {
+  class BooksList {
+    constructor() {
       const thisBook = this;
-
-      thisBook.initData();
+      
       thisBook.renderBooks();
-      thisBook.initActions();
       thisBook.filtersHide();
       thisBook.determineRatingBgc();
+      thisBook.initActions();
+      
     }
-
-    initData() {
+    initData () {
       this.data = dataSource.books;
     }
 
     renderBooks() {
-      const thisBook = this;
-
+      const thisBooks = this;
+    
       for (let book in bookList) {
         const eachBook = bookList[book];
         const rating = bookList[book].rating;
         const ratingWidth = rating*10;
-        const ratingBgc = thisBook.determineRatingBgc(rating);
+        const ratingBgc = thisBooks.determineRatingBgc(rating);
         eachBook.ratingWidth = ratingWidth;
         eachBook.ratingBgc = ratingBgc;
-
-
+    
+    
         const HTML = template(bookList[book]);
-        thisBook.element = utils.createDOMFromHTML(HTML);
-        booksList.appendChild(thisBook.element);
-      }     
+        thisBooks.element = utils.createDOMFromHTML(HTML);
+        booksList.appendChild(thisBooks.element);
+      }
     }
-
+    
     filtersHide() {
       const books = dataSource.books;
       for (let book in books) {
         const bookId = books[book];
         const bookDetails = bookId.details;
-        
+          
         let shouldBeHidden = false;
-
+    
         for (let filter of filters) {
           const filterId = filter;
           if(!bookDetails[filterId]) {
@@ -59,7 +58,7 @@
           }
         }
         const hiddenBook = document.querySelector('.books-list').querySelector('.book__image' + '[data-id="' + bookId.id + '"]');
-
+    
         if(shouldBeHidden) {
           hiddenBook.classList.add('hidden');
         } else {
@@ -67,10 +66,10 @@
         }
       }
     }
-
+    
     determineRatingBgc(rating) {
       let ratingBgc = '';
-
+    
       if(rating < 6) {
         ratingBgc = 'linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)';
       } else if (rating > 6 && rating < 9) {
@@ -82,13 +81,14 @@
       }
       return (ratingBgc);
     }
+      
     
-
     initActions() {
+      const thisBook = this;
       booksList.addEventListener('dblclick', function (e) {
         e.preventDefault();
         const clicked = e.target;
-
+    
         if (clicked.offsetParent.classList.contains('book__image')) {
           const dataId = clicked.offsetParent.getAttribute('data-id');
           if (!favoriteBooks.dataId && !clicked.offsetParent.classList.contains('favorite')) {
@@ -101,10 +101,10 @@
           }
         }
       });
-
+    
       filtersCheck.addEventListener('click', function(e) {
         const click = e.target;
-
+    
         if(click.tagName == 'INPUT' && click.type == 'checkbox' && click.name == 'filter') {
           if(click.checked) {
             filters.push(click.value);
@@ -113,11 +113,17 @@
             filters.splice(removeIndex,1);
           }
         }
+        thisBook.filtersHide();
       });
     }
   }
   const app = function () {
-    new BookList();
+    new BooksList();
   };
   app();
 }
+
+
+
+
+  
